@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Conectium 2026 — 6 productos · 18/05/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F4F1EA;--bg-alt:#EFEAE0;--surface:#FFFFFF;
+  --ink:#1A1815;--ink-soft:#5C5852;--ink-muted:#8B8580;
+  --line:#D9D2C5;--line-soft:#E8E2D5;
+  --accent:#1B4D3E;--accent-soft:#E1F0EA;
+  --vf:#1D7A56;--aq:#2766B5;--sz:#6E5BC7;--td:#C75B2E;
+  --mt:#D4A017;--tr:#A33D5C;
+  --warn:#B8501F;--danger:#A53329;--ok:#2B7A2B;
+  --shadow-sm:0 1px 2px rgba(26,24,21,0.04);
+  --shadow:0 4px 16px rgba(26,24,21,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background-image:radial-gradient(circle at 15% 20%,rgba(27,77,62,0.04) 0%,transparent 40%),radial-gradient(circle at 85% 70%,rgba(199,91,46,0.03) 0%,transparent 45%);min-height:100vh}
+.shell{max-width:1320px;margin:0 auto;padding:32px 28px 80px}
+
+.masthead{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:32px;position:relative}
+.masthead::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--ink);opacity:0.15}
+.brand-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand-mark{width:38px;height:38px;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;border-radius:6px;font-family:'Bricolage Grotesque',serif;font-weight:700;font-size:16px;letter-spacing:-0.04em;transform:rotate(-3deg)}
+.brand-text{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft)}
+.brand-text b{color:var(--ink);font-weight:500}
+.title{font-family:'Bricolage Grotesque',serif;font-size:46px;font-weight:600;line-height:1.02;letter-spacing:-0.035em;margin-bottom:8px}
+.title em{font-style:italic;font-weight:500;color:var(--accent)}
+.subtitle{color:var(--ink-soft);font-size:15px;max-width:620px}
+.meta-block{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:0.05em}
+.meta-block b{display:block;color:var(--ink);font-size:13px;margin-top:4px;letter-spacing:0}
+.meta-block .stamp{display:inline-block;padding:4px 10px;background:var(--accent-soft);color:var(--accent);border-radius:3px;margin-bottom:10px;font-weight:500}
+.meta-block .stamp.live::before{content:"●";margin-right:4px;color:#2B7A2B;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.tabs{display:flex;gap:0;margin-bottom:32px;border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:14px 18px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;border:none;background:none;cursor:pointer;color:var(--ink-muted);border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:0.01em;transition:color 0.15s,border-color 0.15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink)}
+.tab .num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-muted);margin-right:5px;letter-spacing:0.05em}
+.tab.active .num{color:var(--accent)}
+
+.pane{display:none;animation:fadeIn 0.3s ease}
+.pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+.grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:24px}
+@media(max-width:1100px){.grid-6{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.grid-6{grid-template-columns:repeat(2,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media(max-width:560px){.grid-6{grid-template-columns:1fr 1fr}.title{font-size:32px}}
+
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:10px;padding:22px 24px;box-shadow:var(--shadow-sm);transition:box-shadow 0.2s}
+.card:hover{box-shadow:var(--shadow)}
+.card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-h h3{font-family:'Bricolage Grotesque',serif;font-size:18px;font-weight:600;letter-spacing:-0.02em}
+.card-h .h-aside{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);letter-spacing:0.05em;text-transform:uppercase}
+
+.metric{background:var(--surface);border:1px solid var(--line-soft);border-radius:8px;padding:16px;position:relative;overflow:hidden}
+.metric::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent);opacity:0.6}
+.metric.vf::before{background:var(--vf)}
+.metric.aq::before{background:var(--aq)}
+.metric.sz::before{background:var(--sz)}
+.metric.td::before{background:var(--td)}
+.metric.mt::before{background:var(--mt)}
+.metric.tr::before{background:var(--tr)}
+.metric .lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-muted);margin-bottom:8px}
+.metric .val{font-family:'Bricolage Grotesque',serif;font-size:28px;font-weight:600;letter-spacing:-0.03em;line-height:1}
+.metric .sub{font-size:11px;color:var(--ink-soft);margin-top:6px}
+.metric .delta{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#2B7A2B;background:#E1F0EA;padding:1px 5px;border-radius:3px;margin-top:4px}
+.metric .delta.warn{color:#8C3A0E;background:#FBE9D6}
+.metric .delta.new{color:#7A4818;background:#FFE5B4}
+
+.hero-metric{background:linear-gradient(135deg,var(--accent) 0%,#0F3327 100%);color:#F4F1EA;border-radius:14px;padding:26px 30px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;margin-bottom:28px;position:relative;overflow:hidden}
+.hero-metric::before{content:"";position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(244,241,234,0.08),transparent 70%);pointer-events:none}
+.hero-metric .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.7;margin-bottom:6px}
+.hero-metric .h-title{font-family:'Bricolage Grotesque',serif;font-size:22px;font-weight:600;letter-spacing:-0.02em;margin-bottom:14px}
+.hero-metric .h-bar{background:rgba(244,241,234,0.15);height:10px;border-radius:5px;overflow:hidden;margin-bottom:14px}
+.hero-metric .h-fill{height:100%;background:linear-gradient(90deg,#7BC9A4,#F4F1EA);border-radius:5px}
+.hero-metric .h-meta{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;font-size:11px}
+.hero-metric .h-meta b{display:block;font-family:'Bricolage Grotesque',serif;font-size:14px;font-weight:600;margin-top:2px}
+.hero-metric .h-meta span{opacity:0.65;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase}
+.hero-metric .big-num{font-family:'Bricolage Grotesque',serif;font-size:80px;font-weight:600;line-height:0.95;letter-spacing:-0.05em;position:relative;z-index:1}
+.hero-metric .big-num span{font-size:28px;opacity:0.6}
+
+.sprint-head{display:grid;grid-template-columns:90px 1fr 70px 110px;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px}
+.sprint-row{display:grid;grid-template-columns:90px 1fr 70px 110px;gap:14px;align-items:center;padding:6px 0;font-size:14px}
+.sprint-row .sname{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:13px}
+.bar-bg{background:var(--bg-alt);border-radius:100px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;transition:width 0.4s ease}
+.fill-ok{background:var(--ok)}.fill-warn{background:linear-gradient(90deg,var(--warn),#D87C3F)}.fill-danger{background:var(--danger)}
+.pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:100px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.b-ok{background:#E1F0EA;color:#1B4D3E}
+.b-warn{background:#FBE9D6;color:#8C3A0E}
+.b-danger{background:#F8DCD7;color:#7A2218}
+.b-info{background:#DDE9F7;color:#1F4A8E}
+.b-purple{background:#E8E2F4;color:#473C7C}
+.b-gray{background:var(--bg-alt);color:var(--ink-soft)}
+.b-new{background:#FFE9CC;color:#7A4818}
+
+.sub-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.sub-tab{padding:7px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:100px;background:var(--surface);cursor:pointer;color:var(--ink-soft);letter-spacing:0.05em;text-transform:uppercase;transition:all 0.15s}
+.sub-tab:hover{border-color:var(--ink-soft);color:var(--ink)}
+.sub-tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.team-head{display:grid;grid-template-columns:1fr 100px 110px 70px;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px}
+.team-row{display:grid;grid-template-columns:1fr 100px 110px 70px;gap:12px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line-soft);font-size:14px;transition:background 0.15s}
+.team-row:hover{background:var(--bg-alt)}
+.team-row:last-child{border-bottom:none}
+.person{display:flex;align-items:center;gap:12px}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex-shrink:0}
+.av-1{background:#E1F0EA;color:#1B4D3E}
+.av-2{background:#DDE9F7;color:#1F4A8E}
+.av-3{background:#FBE9D6;color:#8C3A0E}
+.av-4{background:#E8E2F4;color:#473C7C}
+.av-5{background:var(--bg-alt);color:var(--ink-soft)}
+.av-6{background:#FFE9CC;color:#7A4818}
+.av-7{background:#F4D2DD;color:#7A2D45}
+.person-name{font-weight:500}
+.hours-cell{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:14px}
+.pct-cell{font-family:'JetBrains Mono',monospace;color:var(--ink-soft);font-size:13px}
+
+.note{background:var(--bg-alt);border-left:3px solid var(--accent);padding:12px 16px;font-size:12px;color:var(--ink-soft);border-radius:0 6px 6px 0;margin-bottom:18px;line-height:1.6}
+.note b{color:var(--ink);font-weight:500}
+.note.warn{border-left-color:var(--warn);background:#FCF1E5;color:#5C3818}
+.note.success{border-left-color:var(--ok);background:#E8F4E2;color:#1B4D2E}
+.note.new{border-left-color:var(--mt);background:#FFF6E0;color:#5C4218}
+
+.pend-list{display:flex;flex-direction:column;gap:2px}
+.pend-item{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.pend-item:last-child{border-bottom:none}
+.pend-dot{width:10px;height:10px;border-radius:50%;margin-top:5px}
+.pend-content b{display:block;font-weight:600;font-size:14px;margin-bottom:2px;color:var(--ink)}
+.pend-content span{font-size:12px;color:var(--ink-soft)}
+.pend-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-muted)}
+
+.chart-frame{position:relative;width:100%;background:var(--surface);padding:8px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink-soft);margin-bottom:16px}
+.legend span{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.legend span b{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted);letter-spacing:0.05em}
+footer .f-r{display:flex;gap:18px}
+footer .f-r span{display:flex;align-items:center;gap:5px}
+footer .f-r b{color:var(--ink-soft);font-weight:500}
+
+.pull-quote{font-family:'Bricolage Grotesque',serif;font-size:22px;font-style:italic;font-weight:400;color:var(--ink-soft);line-height:1.4;letter-spacing:-0.015em;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:28px 0}
+.pull-quote::before{content:"❛❛";font-size:36px;color:var(--accent);line-height:0;display:inline-block;margin-right:6px;vertical-align:-0.18em;opacity:0.5}
+
+.celebration{background:linear-gradient(135deg,#FFE5B4 0%,#FFD9A6 100%);border:1px solid #E5B97A;border-radius:10px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.celebration .ico{font-size:24px}
+.celebration .txt{font-family:'Bricolage Grotesque',serif;font-size:16px;color:#5C3818;font-weight:500}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="masthead">
+  <div>
+    <div class="brand-row">
+      <div class="brand-mark">CN</div>
+      <div class="brand-text">Conectium · <b>Gestión de Células</b> · Reporte Q1–Q2 2026</div>
+    </div>
+    <h1 class="title">Seguimiento de <em>sprints</em><br>multi-producto 2026</h1>
+    <p class="subtitle">Avance consolidado de las 6 productos en sprint: VidaFit, Aqustico, SoyZen, Tienda Digitel, MandarinaTEC y Tribudeportiva. Horas filtradas exclusivamente a tareas dentro de sprints 2026.</p>
+  </div>
+  <div class="meta-block">
+    <span class="stamp live">Datos al día</span><br>
+    Corte de datos<br>
+    <b>18 may 2026</b><br><br>
+    Total horas sprint<br>
+    <b>~4,200 h</b>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-pane="resumen"><span class="num">00</span>Resumen</button>
+  <button class="tab" data-pane="vidafit"><span class="num">01</span>VidaFit</button>
+  <button class="tab" data-pane="aqustico"><span class="num">02</span>Aqustico</button>
+  <button class="tab" data-pane="soyzen"><span class="num">03</span>SoyZen</button>
+  <button class="tab" data-pane="digitel"><span class="num">04</span>T.Digitel</button>
+  <button class="tab" data-pane="mandarina"><span class="num">05</span>MandarinaTEC</button>
+  <button class="tab" data-pane="tribud"><span class="num">06</span>Tribudeportiva</button>
+  <button class="tab" data-pane="equipo"><span class="num">07</span>Equipo</button>
+</nav>
+
+<!-- ============ RESUMEN ============ -->
+<section class="pane active" id="pane-resumen">
+
+  <div class="celebration">
+    <div class="ico">🆕</div>
+    <div class="txt">Reporte amplía cobertura: MandarinaTEC SP1 al 44% y Tribudeportiva SP1 al 50% (ambos primer sprint 2026). Equipo crece a 12 personas.</div>
+  </div>
+
+  <div class="grid-6">
+    <div class="metric vf"><div class="lbl">VidaFit</div><div class="val">94%</div><div class="sub">7 sprints</div></div>
+    <div class="metric aq"><div class="lbl">Aqustico</div><div class="val">98%</div><div class="sub">7 sprints</div></div>
+    <div class="metric sz"><div class="lbl">SoyZen</div><div class="val">93%</div><div class="sub">7 sprints</div></div>
+    <div class="metric td"><div class="lbl">T.Digitel</div><div class="val">99%</div><div class="sub">6 sprints</div></div>
+    <div class="metric mt"><div class="lbl">MandarinaTEC</div><div class="val">44%</div><div class="sub">SP1 activo</div><span class="delta new">Nuevo</span></div>
+    <div class="metric tr"><div class="lbl">Tribudeportiva</div><div class="val">50%</div><div class="sub">SP1 cierra hoy</div><span class="delta new">Nuevo</span></div>
+  </div>
+
+  <div class="hero-metric">
+    <div>
+      <div class="label">Avance global de completado</div>
+      <div class="h-title">6 productos · 28 sprints · ene–may 2026</div>
+      <div class="h-bar"><div class="h-fill" style="width:80%"></div></div>
+      <div class="h-meta">
+        <div><span>VidaFit</span><b>94%</b></div>
+        <div><span>Aqustico</span><b>98%</b></div>
+        <div><span>SoyZen</span><b>93%</b></div>
+        <div><span>T.Digitel</span><b>99%</b></div>
+        <div><span>Mandarina</span><b>44%</b></div>
+        <div><span>TribuD</span><b>50%</b></div>
+      </div>
+    </div>
+    <div class="big-num">80<span>%</span></div>
+  </div>
+
+  <div class="grid-4">
+    <div class="metric"><div class="lbl">Sprints totales</div><div class="val">28</div><div class="sub">+2 nuevos productos</div></div>
+    <div class="metric"><div class="lbl">Sprints al 100%</div><div class="val">22</div><div class="sub">6 sprints activos</div></div>
+    <div class="metric"><div class="lbl">Horas en sprint</div><div class="val">~4,200</div><div class="sub">ene-may 2026</div></div>
+    <div class="metric"><div class="lbl">Personas activas</div><div class="val">13</div><div class="sub">+Angel Sánchez confirmado</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h"><h3>Avance global por producto</h3><span class="h-aside">% al 18/05</span></div>
+      <div class="chart-frame" style="height:280px"><canvas id="cmpAvance"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Horas en sprint por producto</h3><span class="h-aside">acumulado</span></div>
+      <div class="chart-frame" style="height:280px"><canvas id="cmpHoras"></canvas></div>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    "El portafolio Conectium cubre ahora 6 PWAs en sprint. MandarinaTEC y Tribudeportiva inician su ciclo formal 2026 reutilizando talento del equipo (Samuel, Jesika, Anthony de Aqustico; Rubén, Yesika de SoyZen). Crecimiento sano y disciplinado."
+  </div>
+</section>
+
+<!-- ============ VIDAFIT ============ -->
+<section class="pane" id="pane-vidafit">
+  <div class="card">
+    <div class="card-h"><h3>PWA VidaFit — Sprints 2026</h3><span class="h-aside">SP7 cierra 20 may</span></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1–SP5</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Finalizados</span></span></div>
+      <div class="sprint-row"><span class="sname">SP6</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Cerrado ✓</span></span></div>
+      <div class="sprint-row"><span class="sname">SP7</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:50%"></div></div><span class="pct">50</span><span><span class="badge b-warn">Activo</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric vf"><div class="lbl">Avance global</div><div class="val">94%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">1,018h</div></div>
+    <div class="metric"><div class="lbl">Equipo</div><div class="val">4</div></div>
+    <div class="metric"><div class="lbl">SP7</div><div class="val">50%</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo VidaFit</h3></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-1">AV</div><div class="person-name">Alessandro Valsania</div></div><span><span class="badge b-info">Dev FE</span></span><span class="hours-cell">334h</span><span class="pct-cell">33%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">RF</div><div class="person-name">Ricardo Fernandes</div></div><span><span class="badge b-purple">Dev BE</span></span><span class="hours-cell">355h 30m</span><span class="pct-cell">35%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">AR</div><div class="person-name">Andrea Rijana</div></div><span><span class="badge b-warn">QA</span></span><span class="hours-cell">306h</span><span class="pct-cell">30%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-5">FS</div><div class="person-name">Felix Suarez</div></div><span><span class="badge b-gray">DevOps</span></span><span class="hours-cell">23h</span><span class="pct-cell">2%</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>SP7 — Pendientes</h3><span class="h-aside">2/10 done</span></div>
+    <div class="pend-list">
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>HU38 — Mi Actividad de Hoy: Actividades</b><span>En desarrollo</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>HU39 — Footer versión mobile</b><span>En desarrollo</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>HU40 — Mi Actividad de Hoy: Progreso</b><span>En desarrollo</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>TSK Evento personalizado + CHO Migración pnpm</b><span>En desarrollo · Ricardo</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Pase a producción + Culminación SP7</b><span>Por hacer</span></div><span class="pend-tag">Closure</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AQUSTICO ============ -->
+<section class="pane" id="pane-aqustico">
+  <div class="card">
+    <div class="card-h"><h3>PWA Aqustico — Sprints 2026</h3><span class="h-aside">SP7 cierra hoy</span></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1–SP5</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Finalizados</span></span></div>
+      <div class="sprint-row"><span class="sname">SP6</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Cerrado ✓</span></span></div>
+      <div class="sprint-row"><span class="sname">SP7</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:83%"></div></div><span class="pct">83</span><span><span class="badge b-warn">Cierra hoy</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric aq"><div class="lbl">Avance global</div><div class="val">98%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">822h</div></div>
+    <div class="metric"><div class="lbl">SP7</div><div class="val">83%</div></div>
+    <div class="metric"><div class="lbl">Refuerzo</div><div class="val">+1</div><div class="sub">Anthony</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo Aqustico</h3></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-1">JF</div><div class="person-name">Jesika Farfán</div></div><span><span class="badge b-info">QA/PM</span></span><span class="hours-cell">448h</span><span class="pct-cell">55%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">SA</div><div class="person-name">Samuel Alonso</div></div><span><span class="badge b-purple">Dev Full</span></span><span class="hours-cell">363h 45m</span><span class="pct-cell">45%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">AM</div><div class="person-name">Anthony Maldonado</div></div><span><span class="badge b-new">Nuevo</span></span><span class="hours-cell">10h</span><span class="pct-cell">1%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-5">GL</div><div class="person-name">Equipo IA (3 devs)</div></div><span><span class="badge b-gray">Dev IA</span></span><span class="hours-cell">0h</span><span class="pct-cell">—</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>SP7 — Pendientes</h3><span class="h-aside">10/12 done</span></div>
+    <div class="pend-list">
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Pase a Producción SP7</b><span>Por hacer · Jesika + Felix + Samuel</span></div><span class="pend-tag">Deploy</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Culminación SP7</b><span>Por hacer · equipo + Elimar + Veronica</span></div><span class="pend-tag">Closure</span></div>
+    </div>
+  </div>
+  <div class="note success">✅ <b>HUs completadas SP7:</b> HU112 Onda DJ, HU113 Thank You Page, HU114 Menú Móvil, HF actualización playlists, OPT publicación programada, OPT redirección contenido inactivo, TSK ajuste menú móvil, TSK investigación push notifications, CHO revisión código previo.</div>
+</section>
+
+<!-- ============ SOYZEN ============ -->
+<section class="pane" id="pane-soyzen">
+  <div class="card">
+    <div class="card-h"><h3>PWA SoyZen — Sprints 2026</h3></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1–SP5</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Finalizados</span></span></div>
+      <div class="sprint-row"><span class="sname">SP6</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Cerrado ✓</span></span></div>
+      <div class="sprint-row"><span class="sname">SP7</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:45%"></div></div><span class="pct">45</span><span><span class="badge b-warn">Activo</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric sz"><div class="lbl">Avance global</div><div class="val">93%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">999h</div></div>
+    <div class="metric"><div class="lbl">SP7</div><div class="val">45%</div></div>
+    <div class="metric"><div class="lbl">Mayor carga</div><div class="val">Rubén</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo SoyZen</h3></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">RL</div><div class="person-name">Rubén Luna</div></div><span><span class="badge b-purple">Dev Full</span></span><span class="hours-cell">516h</span><span class="pct-cell">52%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">YP</div><div class="person-name">Yesika Perez</div></div><span><span class="badge b-warn">QA</span></span><span class="hours-cell">483h</span><span class="pct-cell">48%</span></div>
+    </div>
+  </div>
+  <div class="note warn">⚠ <b>SP7 SoyZen:</b> Las tareas se registran de forma dispersa (gestión documentos, BP/landing personalizados, reportería, optimización home). Necesario formalizar el sprint con HUs estructuradas. Rubén también dedica ~12h a Tribudeportiva.</div>
+</section>
+
+<!-- ============ DIGITEL ============ -->
+<section class="pane" id="pane-digitel">
+  <div class="card">
+    <div class="card-h"><h3>Tienda Digitel — Sprints 2026</h3><span class="h-aside">SP6 venció 14 may</span></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1–SP4</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Finalizados</span></span></div>
+      <div class="sprint-row"><span class="sname">SP5</span><div class="bar-bg"><div class="bar-fill fill-ok" style="width:100%"></div></div><span class="pct">100</span><span><span class="badge b-ok">Cerrado ✓</span></span></div>
+      <div class="sprint-row"><span class="sname">SP6</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:94%"></div></div><span class="pct">94</span><span><span class="badge b-warn">Casi listo</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric td"><div class="lbl">Avance global</div><div class="val">99%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">1,078h</div></div>
+    <div class="metric"><div class="lbl">SP6</div><div class="val">17/18</div></div>
+    <div class="metric"><div class="lbl">Pase prod</div><div class="val">✓</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo Tienda Digitel</h3></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">MR</div><div class="person-name">Mark Rodríguez</div></div><span><span class="badge b-warn">QA</span></span><span class="hours-cell">404h</span><span class="pct-cell">37%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">PT</div><div class="person-name">Pablo Terán</div></div><span><span class="badge b-info">Dev FE</span></span><span class="hours-cell">58h 45m</span><span class="pct-cell">5%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">AS</div><div class="person-name">Angel Sánchez</div></div><span><span class="badge b-purple">Dev BE</span></span><span class="hours-cell">614h 45m</span><span class="pct-cell">57%</span></div>
+    </div>
+  </div>
+  <div class="note success">✅ <b>SP6 prácticamente cerrado:</b> Lógica registro suscripciones + integración Xafra Ads, ajustes parámetro pdt SMS, hotfix error 1002, corrección redirección SMS, video Home Mercadeo, mantener sesión activa, rediseño modales suscripción/cancelación, estandarización input telefónico, sección "Más Plataformas". Solo queda culminación.</div>
+</section>
+
+<!-- ============ MANDARINATEC (NUEVO) ============ -->
+<section class="pane" id="pane-mandarina">
+  <div class="celebration">
+    <div class="ico">🆕</div>
+    <div class="txt">PWA MandarinaTEC — Primer sprint formal 2026 al 44%. Equipo compartido con Aqustico.</div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>MandarinaTEC — Sprint 1 2026</h3><span class="h-aside">primer sprint</span></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:44%"></div></div><span class="pct">44</span><span><span class="badge b-warn">Activo</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric mt"><div class="lbl">Avance SP1</div><div class="val">44%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">32h</div><div class="sub">Equipo compartido</div></div>
+    <div class="metric"><div class="lbl">Tareas</div><div class="val">9</div><div class="sub">4 done · 4 doing</div></div>
+    <div class="metric"><div class="lbl">HUs core</div><div class="val">4/4</div><div class="sub">Todas completadas</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo MandarinaTEC</h3><span class="h-aside">colaboradores activos</span></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-1">JF</div><div class="person-name">Jesika Farfán</div></div><span><span class="badge b-info">QA/PM</span></span><span class="hours-cell">22h</span><span class="pct-cell">69%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">AM</div><div class="person-name">Anthony Maldonado</div></div><span><span class="badge b-purple">Dev</span></span><span class="hours-cell">10h</span><span class="pct-cell">31%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">SA</div><div class="person-name">Samuel Alonso</div></div><span><span class="badge b-purple">Dev Full</span></span><span class="hours-cell">~30h</span><span class="pct-cell">colab AQ</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-5">FB</div><div class="person-name">Francis Bompart</div></div><span><span class="badge b-gray">Dev IA</span></span><span class="hours-cell">0h</span><span class="pct-cell">—</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>SP1 — Estado de tareas</h3><span class="h-aside">9 tareas</span></div>
+    <div class="pend-list">
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>TSK — Validación Correcta del Tier</b><span>En desarrollo · Samuel + Anthony</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>CHO — Auditoría de Código</b><span>En desarrollo · Samuel + Anthony</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>TSK Equipo IA</b><span>En desarrollo · Francis Bompart</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>Reuniones y Ceremonias</b><span>En curso · equipo completo</span></div><span class="pend-tag">Ceremony</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Culminación SP1</b><span>Por hacer · Elimar + Jesika + Isabella + Anthony + Samuel + Virginia</span></div><span class="pend-tag">Closure</span></div>
+    </div>
+  </div>
+  <div class="note new">📌 <b>MandarinaTEC primer sprint:</b> El producto inicia formalmente en sprints 2026 con cuatro HUs base (Header, Menú, Hero, Footer) ya entregadas. Aún pendiente validación tier, auditoría de código y trabajo de IA antes de culminación.</div>
+</section>
+
+<!-- ============ TRIBUDEPORTIVA (NUEVO) ============ -->
+<section class="pane" id="pane-tribud">
+  <div class="celebration">
+    <div class="ico">🆕</div>
+    <div class="txt">Tribudeportiva SP1 2026 (6-19 may) — CIERRA HOY al 50%. Foco en multilenguaje (Weglot/Stripe) y campañas BP.</div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Tribudeportiva — Sprint 1 2026</h3><span class="h-aside">cierra 19 may</span></div>
+    <div class="sprint-head"><div>Sprint</div><div>Progreso</div><div>%</div><div>Estado</div></div>
+    <div>
+      <div class="sprint-row"><span class="sname">SP1</span><div class="bar-bg"><div class="bar-fill fill-warn" style="width:50%"></div></div><span class="pct">50</span><span><span class="badge b-warn">Cierra hoy</span></span></div>
+    </div>
+  </div>
+  <div class="grid-4">
+    <div class="metric tr"><div class="lbl">Avance SP1</div><div class="val">50%</div></div>
+    <div class="metric"><div class="lbl">Horas sprint</div><div class="val">~63h</div><div class="sub">Rubén + Yesika + Mariale</div></div>
+    <div class="metric"><div class="lbl">Tareas</div><div class="val">11</div><div class="sub">HUs principales: 4 done · 2 doing · 2 todo</div></div>
+    <div class="metric"><div class="lbl">Riesgo</div><div class="val">Medio</div><div class="sub">2 HUs sin iniciar</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Equipo Tribudeportiva</h3><span class="h-aside">colaboradores activos</span></div>
+    <div class="team-head"><div>Persona</div><div>Rol</div><div>Horas</div><div>%</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">RL</div><div class="person-name">Rubén Luna</div></div><span><span class="badge b-purple">Dev Full</span></span><span class="hours-cell">12h</span><span class="pct-cell">19%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">YP</div><div class="person-name">Yesika Perez</div></div><span><span class="badge b-warn">QA</span></span><span class="hours-cell">~34h</span><span class="pct-cell">54%</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-7">JR</div><div class="person-name">Jhonathan Rodriguez</div></div><span><span class="badge b-purple">Dev</span></span><span class="hours-cell">0h</span><span class="pct-cell">no registra</span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-5">MA</div><div class="person-name">Mariale Alonzo</div></div><span><span class="badge b-gray">UX</span></span><span class="hours-cell">~17h</span><span class="pct-cell">27%</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>SP1 — Tareas pendientes</h3><span class="h-aside">4/8 HUs done · 2 doing · 2 todo</span></div>
+    <div class="pend-list">
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>HU 120 — Landings BP</b><span>En desarrollo · prioridad alta · Rubén + Yesika + Jhonathan + Mariale</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>OPT — Centralización API Football</b><span>En desarrollo · prioridad alta · Rubén</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>LEG — Redirección Operadoras Suscripción</b><span>En desarrollo · Rubén</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--warn)"></div><div class="pend-content"><b>TSK — Normalización ID de Campaña</b><span>En desarrollo · Rubén</span></div><span class="pend-tag">Doing</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--danger)"></div><div class="pend-content"><b>HU 120 — Multilenguaje Stripe</b><span>Sin iniciar · Rubén + Jhonathan</span></div><span class="pend-tag">Todo</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--danger)"></div><div class="pend-content"><b>OPT — Layout Multilenguaje</b><span>Sin iniciar · Rubén + Jhonathan</span></div><span class="pend-tag">Todo</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Pase a Producción Sprint</b><span>Por hacer · Carlos Sanoja</span></div><span class="pend-tag">Deploy</span></div>
+      <div class="pend-item"><div class="pend-dot" style="background:var(--ink-muted)"></div><div class="pend-content"><b>Reuniones y Ceremonias + Culminación SP</b><span>Por hacer · Rebeca</span></div><span class="pend-tag">Closure</span></div>
+    </div>
+  </div>
+  <div class="note warn">⚠ <b>Cierre SP1 Tribudeportiva:</b> 4/8 HUs principales completadas (HU119, HU121, HU122, HF-AMC). En progreso: Landings BP, API Football, normalización. Pendientes: HU120 Stripe y OPT Layout. ~63h registradas en sprint por Rubén (12h), Yesika (~34h QA) y Mariale (~17h UX).</div>
+</section>
+
+<!-- ============ EQUIPO ============ -->
+<section class="pane" id="pane-equipo">
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-h"><h3>Dedicación por persona y producto</h3><span class="h-aside">al 18/05 — 12 personas</span></div>
+    <div class="legend" id="globalLegend"></div>
+    <div class="chart-frame" style="height:360px"><canvas id="globalPie"></canvas></div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-h"><h3>Horas en sprint por persona</h3><span class="h-aside">barra apilada por producto</span></div>
+    <div class="chart-frame" style="height:320px"><canvas id="globalBar"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Resumen completo del equipo</h3><span class="h-aside">al 18/05/2026</span></div>
+    <div class="team-head"><div>Persona</div><div>Producto</div><div>Horas sprint</div><div>Rol</div></div>
+    <div>
+      <div class="team-row"><div class="person"><div class="avatar av-1">AV</div><div class="person-name">Alessandro Valsania</div></div><span class="hours-cell" style="font-size:12px;color:var(--vf)">VidaFit</span><span class="hours-cell">334h</span><span><span class="badge b-info">Dev FE</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">RF</div><div class="person-name">Ricardo Fernandes</div></div><span class="hours-cell" style="font-size:12px;color:var(--vf)">VidaFit</span><span class="hours-cell">355h 30m</span><span><span class="badge b-purple">Dev BE</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">AR</div><div class="person-name">Andrea Rijana</div></div><span class="hours-cell" style="font-size:12px;color:var(--vf)">VidaFit</span><span class="hours-cell">306h</span><span><span class="badge b-warn">QA</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-1">JF</div><div class="person-name">Jesika Farfán</div></div><span class="hours-cell" style="font-size:12px">Aqustico+Mandarina</span><span class="hours-cell">470h</span><span><span class="badge b-info">QA/PM</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">SA</div><div class="person-name">Samuel Alonso</div></div><span class="hours-cell" style="font-size:12px;color:var(--aq)">Aqustico</span><span class="hours-cell">363h 45m</span><span><span class="badge b-purple">Dev Full</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">RL</div><div class="person-name">Rubén Luna</div></div><span class="hours-cell" style="font-size:12px">SoyZen+TribuD</span><span class="hours-cell">528h</span><span><span class="badge b-purple">Dev Full</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">YP</div><div class="person-name">Yesika Perez</div></div><span class="hours-cell" style="font-size:12px;color:var(--sz)">SoyZen+TribuD</span><span class="hours-cell">582h 40m</span><span><span class="badge b-warn">QA</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-3">MR</div><div class="person-name">Mark Rodríguez</div></div><span class="hours-cell" style="font-size:12px;color:var(--td)">T. Digitel</span><span class="hours-cell">404h</span><span><span class="badge b-warn">QA</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-2">PT</div><div class="person-name">Pablo Terán</div></div><span class="hours-cell" style="font-size:12px;color:var(--td)">T. Digitel</span><span class="hours-cell">58h 45m</span><span><span class="badge b-info">Dev FE</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">AS</div><div class="person-name">Angel Sánchez</div></div><span class="hours-cell" style="font-size:12px;color:var(--td)">T. Digitel</span><span class="hours-cell">614h 45m</span><span><span class="badge b-purple">Dev BE</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-4">AM</div><div class="person-name">Anthony Maldonado</div></div><span class="hours-cell" style="font-size:12px;color:var(--mt)">MandarinaTEC</span><span class="hours-cell">10h</span><span><span class="badge b-new">Nuevo</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-5">FS</div><div class="person-name">Felix Suarez</div></div><span class="hours-cell" style="font-size:12px;color:var(--ink-soft)">Transversal</span><span class="hours-cell">23h</span><span><span class="badge b-gray">DevOps</span></span></div>
+      <div class="team-row"><div class="person"><div class="avatar av-7">JR</div><div class="person-name">Jhonathan Rodriguez</div></div><span class="hours-cell" style="font-size:12px;color:var(--tr)">TribuD/SoyZen</span><span class="hours-cell">0h</span><span><span class="badge b-gray">Sin registro</span></span></div>
+    </div>
+    <div class="note" style="margin-top:18px"><b>Sin registro de horas:</b> Rebeca Ramos (SM), Elimar Camacho (Stakeholder), Equipo IA Aqustico (Gianfranco, Francis, Guillermo), Jhonathan Rodriguez (Dev SoyZen/TribuD). <b>Nuevo en sprints 2026:</b> Anthony Maldonado (MandarinaTEC + apoyos Aqustico) y formalización de MandarinaTEC + Tribudeportiva como productos en sprint.</div>
+  </div>
+</section>
+
+<footer>
+  <div>Generado <span style="color:var(--ink-soft)">19-05-2026</span> · ClickUp Workspace 9008026782 · Gestión de Células Conectium · 6 productos · 28 sprints</div>
+  <div class="f-r">
+    <span><b>28</b>sprints</span>
+    <span><b>13</b>personas</span>
+    <span><b>~4,200h</b>total</span>
+  </div>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('pane-'+t.dataset.pane).classList.add('active');
+  });
+});
+
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#5C5852';
+
+const VF='#1D7A56', AQ='#2766B5', SZ='#6E5BC7', TD='#C75B2E', MT='#D4A017', TR='#A33D5C';
+
+new Chart(document.getElementById('cmpAvance'),{
+  type:'bar',
+  data:{labels:['VidaFit','Aqustico','SoyZen','T.Digitel','Mandarina','TribuD'],
+    datasets:[{data:[94,98,93,99,44,50],backgroundColor:[VF,AQ,SZ,TD,MT,TR],borderRadius:6,barPercentage:0.65}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'%'}}},scales:{x:{grid:{display:false},border:{display:false}},y:{grid:{color:'#E8E2D5'},border:{display:false},ticks:{callback:v=>v+'%'},max:110}}}
+});
+
+new Chart(document.getElementById('cmpHoras'),{
+  type:'bar',
+  data:{labels:['VidaFit','Aqustico','SoyZen','T.Digitel','Mandarina','TribuD'],
+    datasets:[{data:[1018,822,999,1078,32,63],backgroundColor:[VF,AQ,SZ,TD,MT,TR],borderRadius:6,barPercentage:0.6}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(0)+'h'}}},scales:{x:{grid:{color:'#E8E2D5'},border:{display:false},ticks:{callback:v=>v+'h'}},y:{grid:{display:false},border:{display:false}}}}
+});
+
+const personas = ['Alessandro','Ricardo','Andrea','Felix','Jesika','Samuel','Rubén','Yesika','Mark','Pablo','Angel','Anthony','Jhonathan'];
+const productos_principales = ['VidaFit','VidaFit','VidaFit','VidaFit','Aqustico+Mand','Aqustico','SoyZen+TribuD','SoyZen+TribuD','T.Digitel','T.Digitel','T.Digitel','MandarinaTEC','TribuD'];
+const horas_tot = [334,355.5,306,23,470,363.75,528,582.67,404,58.75,614.75,10,0];
+const colors = [VF,'#0F4D34','#5DB389','#9FE1CB',AQ,'#1F4A8E',SZ,'#473C7C',TD,'#8C3A0E','#A05820',MT,TR];
+
+const lg = document.getElementById('globalLegend');
+personas.forEach((n,i)=>{
+  if(horas_tot[i] > 0) lg.innerHTML += `<span><b style="background:${colors[i]}"></b>${n} <span style="color:var(--ink-muted);margin-left:2px">(${productos_principales[i]})</span></span>`;
+});
+
+new Chart(document.getElementById('globalPie'),{
+  type:'pie',
+  data:{labels:personas.filter((_,i)=>horas_tot[i]>0),
+    datasets:[{data:horas_tot.filter(h=>h>0),
+      backgroundColor:colors.filter((_,i)=>horas_tot[i]>0),
+      borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const tot=horas_tot.reduce((a,b)=>a+b,0);const pct=Math.round(c.parsed/tot*100);return ` ${c.label}: ${c.parsed.toFixed(0)}h — ${pct}%`}}}}}
+});
+
+// Datos por producto por persona para barra apilada
+// [VidaFit, Aqustico, SoyZen, TDigitel, Mandarina, TribuD]
+const dataPersona = {
+  'Alessandro': [334,0,0,0,0,0],
+  'Ricardo': [355.5,0,0,0,0,0],
+  'Andrea': [306,0,0,0,0,0],
+  'Felix': [23,0,0,0,0,0],
+  'Jesika': [0,448,0,0,22,0],
+  'Samuel': [0,363.75,0,0,0,0],
+  'Rubén': [0,0,516,0,0,12],
+  'Yesika': [0,0,548.67,0,0,34],
+  'Mark': [0,0,0,404,0,0],
+  'Pablo': [0,0,0,58.75,0,0],
+  'Angel': [0,0,0,614.75,0,0],
+  'Anthony': [0,0,0,0,10,0],
+  'Jhonathan': [0,0,0,0,0,0]
+};
+
+new Chart(document.getElementById('globalBar'),{
+  type:'bar',
+  data:{labels:personas,
+    datasets:[
+      {label:'VidaFit',data:personas.map(p=>dataPersona[p][0]),backgroundColor:VF,borderRadius:3},
+      {label:'Aqustico',data:personas.map(p=>dataPersona[p][1]),backgroundColor:AQ,borderRadius:3},
+      {label:'SoyZen',data:personas.map(p=>dataPersona[p][2]),backgroundColor:SZ,borderRadius:3},
+      {label:'T.Digitel',data:personas.map(p=>dataPersona[p][3]),backgroundColor:TD,borderRadius:3},
+      {label:'MandarinaTEC',data:personas.map(p=>dataPersona[p][4]),backgroundColor:MT,borderRadius:3},
+      {label:'Tribudeportiva',data:personas.map(p=>dataPersona[p][5]),backgroundColor:TR,borderRadius:3}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},padding:10,boxWidth:10}},tooltip:{mode:'index',intersect:false,filter:t=>t.parsed.y>0}},scales:{x:{stacked:true,grid:{display:false},border:{display:false},ticks:{font:{size:10},maxRotation:35}},y:{stacked:true,grid:{color:'#E8E2D5'},border:{display:false},ticks:{callback:v=>Math.round(v)+'h'}}}}
+});
+</script>
+</body>
+</html>
